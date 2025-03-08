@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movie Watchlist</title>
+
+    <!-- Alpine Plugins -->
+    <script src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Alpine Core -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- import css file -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+  </head>
+  <body>
+    <script>
+      document.addEventListener("alpine:init", () => {
+        Alpine.store("movies", {
+          list: Alpine.$persist([]).as("movies"),
+
+          add(title) {
+            if (title.trim()) {
+              this.list = [...this.list, { title, watched: false }]; // Fix: Reassign array
+            }
+          },
+
+          toggle(index) {
+            this.list[index].watched = !this.list[index].watched;
+            this.list = [...this.list]; // Fix: Force reactivity
+          },
+
+          remove(index) {
+            this.list = this.list.filter((_, i) => i !== index); // Fix: Use `.filter()`
+          }
+        });
+      });
+    </script>
+
+    <div class="movie-container" x-data="{ newMovie: '' }">
+      <h1>Movie Watchlist</h1>
+      <form @submit.prevent="$store.movies.add(newMovie); newMovie = ''">
+        <input type="text" x-model="newMovie" placeholder="Enter movie title" required />
+        <button type="submit">&plus; Add Movie</button>
+      </form>
+
+      <div class="movie-list">
+        <template x-for="(movie, index) in $store.movies.list" :key="index">
+          <div class="movie-item" :class="{ watched: movie.watched }">
+            <span x-text="movie.title"></span>
+            <div class="actions">
+              <button class="btn check" x-bind:class="{ watched: movie.watched }" @click="$store.movies.toggle(index)">
+                <!-- <span x-text="movie.watched ? 'Unwatch' : 'Watched'"></span> -->
+                <span x-show="!movie.watched" class="material-symbols-outlined">
+                  check
+                </span>
+                <span x-show="movie.watched" class="material-symbols-outlined"> done_all </span>
+              </button>
+              <button class="btn remove" @click="$store.movies.remove(index)">
+                <span class="material-symbols-outlined"> delete </span>
+              </button>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </body>
+</html>
