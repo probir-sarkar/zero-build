@@ -12,7 +12,10 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <!-- import css file -->
     <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&icon_names=check,delete,done_all&display=block"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <script>
@@ -52,9 +55,7 @@
             <div class="actions">
               <button class="btn check" x-bind:class="{ watched: movie.watched }" @click="$store.movies.toggle(index)">
                 <!-- <span x-text="movie.watched ? 'Unwatch' : 'Watched'"></span> -->
-                <span x-show="!movie.watched" class="material-symbols-outlined">
-                  check
-                </span>
+                <span x-show="!movie.watched" class="material-symbols-outlined"> check </span>
                 <span x-show="movie.watched" class="material-symbols-outlined"> done_all </span>
               </button>
               <button class="btn remove" @click="$store.movies.remove(index)">
